@@ -5,8 +5,13 @@
 #include <vector>
 #include <stdexcept>
 #include <unistd.h>
-#include <wait.h>
+#ifdef __APPLE__
+    #include <sys/wait.h>
+#elif __linux__
+    #include <wait.h>
+#endif
 #include <csignal>
+#include <fcntl.h>
 #include "MyProcess.h"
 
 
@@ -36,6 +41,7 @@ static std::vector<char*> get_tokens(std::string &arguments) {
         }
         if (i == arguments.size() - 1 && start != -1) tokens.push_back(string_to_char_array(arguments.substr(start, i - start + 1)));
     }
+    tokens.push_back(nullptr);
     return tokens;
 }
 
@@ -62,7 +68,6 @@ void MyProcess::start() {
             dup2(out->get_handler(), 1);
             out->child_callback();
         }
-
         execve(program_name.c_str(), tokens.data(), nullptr);
         throw std::invalid_argument("Program not found.");
     }
