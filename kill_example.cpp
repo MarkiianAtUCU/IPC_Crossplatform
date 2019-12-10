@@ -4,7 +4,7 @@
 
 #include <iostream>
 #if defined(__linux__) || defined(__APPLE__)
-    #include <zconf.h>
+    #include <unistd.h>
 #elif _WIN32
     #include <windows.h>
 #endif

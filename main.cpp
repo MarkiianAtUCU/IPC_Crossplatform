@@ -4,7 +4,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #elif __linux__ || __APPLE__
-    #include <zconf.h>
+    #include <unistd.h>
 #endif
 
 int main(int argc, char **argv) {

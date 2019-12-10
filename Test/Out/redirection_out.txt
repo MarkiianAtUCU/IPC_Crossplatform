@@ -1,0 +1,5 @@
+Message from master: ThisIsInForRedirection
+0th argument = redirection_example
+1th argument = arg1
+2th argument = arg2
+3th argument = arg3
