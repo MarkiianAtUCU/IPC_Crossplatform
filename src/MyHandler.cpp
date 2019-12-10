@@ -15,7 +15,7 @@
 
 MyHandler::MyHandler(std::string file_name) {
 #if defined(__linux__) || defined(__APPLE__)
-    t_handler desc = open(file_name.c_str(), O_RDWR | O_CREAT | O_TRUNC, S_IRWXU);
+    t_handler desc = open(file_name.c_str(), O_RDWR | O_CREAT, S_IRWXU);
 
     if (desc == -1)
         throw std::invalid_argument("Can't open file.");

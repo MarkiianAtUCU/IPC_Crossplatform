@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
 #elif _WIN32
     MyProcess process("./redirection_example.exe");
 #endif
-    process.set_input_file("a");
+    process.set_input_file("redirection_input");
     process.set_arguments("arg1 arg2 arg3");
     process.set_output_file("redirection_file");
     process.start();
