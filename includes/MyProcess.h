@@ -13,6 +13,11 @@
 
 #ifdef _WIN32
 typedef PROCESS_INFORMATION t_phandler;
+typedef struct MyData {
+    HANDLE from;
+    HANDLE to;
+} MYDATA, *PMYDATA;
+
 #elif __linux__ || __APPLE__
 typedef int t_phandler;
 #endif
@@ -25,6 +30,15 @@ private:
     t_phandler pid{};
     Handler *in = nullptr;
     Handler *out = nullptr;
+
+#ifdef _WIN32
+    t_handler reader;
+    t_handler writer;
+    PMYDATA dataReader;
+    PMYDATA dataWriter;
+
+#endif
+
 
 public:
     explicit MyProcess(std::string program_name) : program_name(program_name) {};

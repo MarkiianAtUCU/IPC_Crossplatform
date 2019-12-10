@@ -10,8 +10,10 @@
 #endif
 
 int main() {
+    std::string input;
+    std::cin >> input;
     for (int i=0;;i++) {
-        std::cout << "Endless Printing of: " << i << std::endl;
+        std::cout << "Endless Printing of: " << input << i << std::endl;
         #if defined(__linux__) || defined(__APPLE__)
             sleep(1);
         #elif _WIN32

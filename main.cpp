@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
     process.start();
     std::cout << process.wait() << std::endl;
 
+
 #if defined(__linux__) || defined(__APPLE__)
     MyProcess pipe_input("pipe_input");
     MyProcess pipe_output("pipe_output");
@@ -33,8 +34,15 @@ int main(int argc, char **argv) {
     pipe_input.start();
     pipe_output.start();
     std::cout << pipe_input.wait() << std::endl;
+    std::cout << pipe_output.wait() << std::endl;
 
+#if defined(__linux__) || defined(__APPLE__)
     MyProcess kill_example("kill_example");
+#elif _WIN32
+    MyProcess kill_example("kill_example.exe");
+
+#endif
+    kill_example.set_input_file("kill_input.txt");
     kill_example.set_output_file("kill_example_file");
     kill_example.start();
 #if defined(__linux__) || defined(__APPLE__)

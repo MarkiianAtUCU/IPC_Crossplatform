@@ -63,6 +63,9 @@ static void release_arguments(std::vector<char *> &arguments) {
 
 #elif _WIN32
 #define BUFSIZE 4096
+
+
+
 void WriteToPipe(HANDLE from, HANDLE to) {
     DWORD dwRead, dwWritten;
     CHAR chBuf[BUFSIZE];
@@ -85,6 +88,21 @@ void ReadFromPipe(HANDLE from, HANDLE to) {
         if (! WriteFile(to, chBuf, dwRead, &dwWritten, NULL))
             break;
     }
+}
+
+#include <iostream>
+DWORD WINAPI ThreadedWrite(LPVOID lpParam) {
+    PMYDATA pDataArray;
+    pDataArray = (PMYDATA)lpParam;
+    WriteToPipe(pDataArray->from, pDataArray->to);
+    return 0;
+}
+
+DWORD WINAPI ThreadedRead(LPVOID lpParam) {
+    PMYDATA pDataArray;
+    pDataArray = (PMYDATA)lpParam;
+    ReadFromPipe(pDataArray->from, pDataArray->to);
+    return 0;
 }
 #endif
 
@@ -122,6 +140,7 @@ void MyProcess::start() {
     saAttr.bInheritHandle = TRUE;
     saAttr.lpSecurityDescriptor = NULL;
 
+    DWORD   dwThreadIdArray[2];
 
     HANDLE hSaveStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     HANDLE hChildStdoutRd, hChildStdoutWr;
@@ -157,20 +176,61 @@ void MyProcess::start() {
     SetStdHandle(STD_INPUT_HANDLE, hSaveStdin);
     SetStdHandle(STD_OUTPUT_HANDLE, hSaveStdout);
 
+    dataWriter = (PMYDATA) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+                        sizeof(MYDATA));
     if (!in) {
-        WriteToPipe(hSaveStdin, hChildStdinWr);
+//        WriteToPipe(hSaveStdin, hChildStdinWr);
+        dataWriter->from = hSaveStdin;
+        dataWriter->to = hChildStdinWr;
+        writer= CreateThread(
+                NULL,                   // default security attributes
+                0,                      // use default stack size
+                ThreadedWrite,       // thread function name
+                dataWriter,          // argument to thread function
+                0,                      // use default creation flags
+                &dwThreadIdArray[0]);
     } else {
-        WriteToPipe(in->get_handler(), hChildStdinWr);  // get data from in
+        dataWriter->from = in->get_handler();
+        dataWriter->to = hChildStdinWr;
+        writer= CreateThread(
+                NULL,                   // default security attributes
+                0,                      // use default stack size
+                ThreadedWrite,       // thread function name
+                dataWriter,          // argument to thread function
+                0,                      // use default creation flags
+                &dwThreadIdArray[0]);
+//        WriteToPipe(in->get_handler(), hChildStdinWr);  // get data from in
     }
     CloseHandle(hChildStdoutWr);
 
-
+    dataReader = (PMYDATA) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
+                                          sizeof(MYDATA));
     if (!out) {
-        ReadFromPipe(hChildStdoutRd, hSaveStdout);
+//        ReadFromPipe(hChildStdoutRd, hSaveStdout);
+        dataReader->from = hChildStdoutRd;
+        dataReader->to = hSaveStdout;
+
+        writer= CreateThread(
+                NULL,                   // default security attributes
+                0,                      // use default stack size
+                ThreadedRead,       // thread function name
+                dataReader,          // argument to thread function
+                0,                      // use default creation flags
+                &dwThreadIdArray[1]);
+
     } else {
-        ReadFromPipe(hChildStdoutRd, out->get_handler()); // send data to out
+//        ReadFromPipe(hChildStdoutRd, out->get_handler()); // send data to out
+        dataReader->from = hChildStdoutRd;
+        dataReader->to = out->get_handler();
+        SetHandleInformation(out->get_handler(), HANDLE_FLAG_INHERIT, 0);
+        writer= CreateThread(
+                NULL,                   // default security attributes
+                0,                      // use default stack size
+                ThreadedRead,       // thread function name
+                dataReader,          // argument to thread function
+                0,                      // use default creation flags
+                &dwThreadIdArray[1]);
     }
-    delete out;
 #endif
 }
 
@@ -210,6 +270,13 @@ int MyProcess::wait() {
     waitpid(pid, &result, 0);
     return WEXITSTATUS(result);
 #elif _WIN32
+    WaitForSingleObject(this->writer, INFINITE);
+    CloseHandle(this->writer);
+    HeapFree(GetProcessHeap(), 0, dataWriter);
+    delete out;
+    WaitForSingleObject(this->reader, INFINITE);
+    CloseHandle(this->reader);
+    HeapFree(GetProcessHeap(), 0, dataReader);
     return WaitForSingleObject( pid.hProcess, INFINITE );
 #endif
 }
