@@ -9,3 +9,4 @@ add_executable(IPC_Crossplatform main.cpp includes/MyHandler.h includes/MyProces
 add_executable(redirection_example redirection_example.cpp)
 add_executable(pipe_input pipe_example1.cpp)
 add_executable(pipe_output pipe_example2.cpp)
+add_executable(kill_example kill_example.cpp)
