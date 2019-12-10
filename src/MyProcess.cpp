@@ -224,12 +224,11 @@ void MyProcess::kill() {
 }
 
 MyProcess::~MyProcess() {
-    delete in;
-    delete out;
-
 #ifdef _WIN32
     CloseHandle( pid.hProcess);
     CloseHandle( pid.hThread);
+#elif defined(__linux__) || defined(__APPLE__)
+    delete in;
+    delete out;
 #endif
-
 }

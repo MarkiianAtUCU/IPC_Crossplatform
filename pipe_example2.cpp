@@ -7,7 +7,7 @@
 
 int main(int argc, char **argv) {
     for (std::string line; std::getline(std::cin, line);) {
-        std::cout << line << std::endl;
+        std::cout << "Pipe end: " << line << std::endl;
     }
     return 0;
 }

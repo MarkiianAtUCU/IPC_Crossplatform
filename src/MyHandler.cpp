@@ -24,7 +24,7 @@ MyHandler::MyHandler(std::string file_name) {
 
 #elif _WIN32
     this->handler = CreateFile(
-            filename.c_str(),
+            file_name.c_str(),
             GENERIC_READ | GENERIC_WRITE,
             0,
             NULL,
@@ -34,7 +34,7 @@ MyHandler::MyHandler(std::string file_name) {
 
     if (this->handler == INVALID_HANDLE_VALUE) {
         this->handler = CreateFile(
-                filename.c_str(),
+                file_name.c_str(),
                 GENERIC_READ | GENERIC_WRITE,
                 0,
                 NULL,

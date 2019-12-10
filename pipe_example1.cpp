@@ -6,6 +6,8 @@
 
 int main(int argc, char **argv) {
     std::string message = "Hello from another end of a pipe!\n";
-    std::cout << message << std::endl;
+    std::string input;
+    std::cin >> input;
+    std::cout << input << std::endl;
     return 0;
 }
