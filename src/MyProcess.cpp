@@ -12,6 +12,7 @@
 
 #ifdef __APPLE__
 #include <sys/wait.h>
+#include <signal.h>
 #elif __linux__
 
 #include <wait.h>
