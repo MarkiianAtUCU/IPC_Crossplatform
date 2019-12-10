@@ -6,37 +6,44 @@
 #define IPC_CROSSPLATFORM_MYPROCESS_H
 
 #include "MyHandler.h"
+#include <windows.h>
 
-typedef int t_phandler;
+typedef PROCESS_INFORMATION t_phandler;
 
 class MyProcess {
 private:
     std::string program_name;
+    std::string arguments;
     t_phandler pid;
+    Handler * in = nullptr;
+    Handler * out = nullptr;
 
-    void _start(std::string, AbstractHandler in, AbstractHandler out);
 public:
-    MyProcess(std::string program_name) : program_name(program_name);
+    MyProcess(std::string program_name) : program_name(program_name) {};
 
-    inline void start(std::string arguments) {
-        this->_start(
-                arguments,
-                StdInHandler::getInstance(),
-                StdOutHandler::getInstance()
-                );
-    };
+    void set_arguments(std::string args) {
+        arguments = args;
+    }
 
+    void set_input_file(std::string file_name) {
+        delete in;
+        in = new MyHandler(file_name);
+    }
 
-    inline void start(std::string arguments, MyHandler in, MyHandler out) {
-        this->_start(
-                arguments,
-                in, out
-        );
-    };
+    void set_output_file(std::string file_name) {
+        delete out;
+        out = new MyHandler(file_name);
+    }
+
+    void set_output_process(MyProcess & process);
 
     void kill();
-    void terminate();
+
     int wait();
+
+    void start();
+
+    ~MyProcess();
 };
 
 #endif //IPC_CROSSPLATFORM_MYPROCESS_H
