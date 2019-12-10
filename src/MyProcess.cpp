@@ -90,14 +90,12 @@ void ReadFromPipe(HANDLE from, HANDLE to) {
     }
 }
 
-#include <iostream>
 DWORD WINAPI ThreadedWrite(LPVOID lpParam) {
     PMYDATA pDataArray;
     pDataArray = (PMYDATA)lpParam;
     WriteToPipe(pDataArray->from, pDataArray->to);
     return 0;
 }
-
 DWORD WINAPI ThreadedRead(LPVOID lpParam) {
     PMYDATA pDataArray;
     pDataArray = (PMYDATA)lpParam;

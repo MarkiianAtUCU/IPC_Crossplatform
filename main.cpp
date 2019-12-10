@@ -13,9 +13,9 @@ int main(int argc, char **argv) {
 #elif _WIN32
     MyProcess process("./redirection_example.exe");
 #endif
-    process.set_input_file("redirection_input");
+    process.set_input_file("../Test/In/redirection_in.txt");
     process.set_arguments("arg1 arg2 arg3");
-    process.set_output_file("redirection_file");
+    process.set_output_file("../Test/Out/redirection_out.txt");
     process.start();
     std::cout << process.wait() << std::endl;
 
@@ -27,9 +27,9 @@ int main(int argc, char **argv) {
     MyProcess pipe_input("./pipe_input.exe");
     MyProcess pipe_output("./pipe_output.exe");
 #endif
-    pipe_input.set_input_file("in.txt");
+    pipe_input.set_input_file("../Test/In/pipe_in.txt");
     pipe_input.set_output_process(pipe_output);
-    pipe_output.set_output_file("pipe_results");
+    pipe_output.set_output_file("../Test/Out/pipe_out.txt");
 
     pipe_input.start();
     pipe_output.start();
@@ -42,8 +42,8 @@ int main(int argc, char **argv) {
     MyProcess kill_example("kill_example.exe");
 
 #endif
-    kill_example.set_input_file("kill_input.txt");
-    kill_example.set_output_file("kill_example_file");
+    kill_example.set_input_file("../Test/In/kill_in.txt");
+    kill_example.set_output_file("../Test/Out/kill_out.txt");
     kill_example.start();
 #if defined(__linux__) || defined(__APPLE__)
     sleep(5);
