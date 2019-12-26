@@ -6,6 +6,7 @@
 #define IPC_CROSSPLATFORM_MYPROCESS_H
 
 #include "MyHandler.h"
+#include "MyProcessEnvironment.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -30,6 +31,7 @@ private:
     t_phandler pid{};
     Handler *in = nullptr;
     Handler *out = nullptr;
+    MyProcessEnvironment env;
 
 #ifdef _WIN32
     t_handler reader;
@@ -50,6 +52,10 @@ public:
     void set_input_file(std::string file_name) {
         delete in;
         in = new MyHandler(file_name);
+    }
+
+    void set_environment(MyProcessEnvironment &environment) {
+        env = environment;
     }
 
     void set_output_file(std::string file_name) {

@@ -1,5 +1,7 @@
 #include <iostream>
 #include "MyProcess.h"
+#include "MyProcessEnvironment.h"
+
 
 #ifdef _WIN32
 #include <windows.h>
@@ -51,6 +53,18 @@ int main(int argc, char **argv) {
     Sleep(5000);
 #endif
     kill_example.kill();
+
+    MyProcessEnvironment env;
+    env.set("key1", "value1");
+    env.set("key2", "value2");
+    env.set("key3", "value3");
+
+    MyProcess env_example("environment_vars_example");
+    env_example.set_output_file("../Test/Out/env_example_out.txt");
+    env_example.set_environment(env);
+
+    env_example.start();
+    std::cout << env_example.wait() << std::endl;
 
     return 0;
 }

@@ -122,7 +122,7 @@ void MyProcess::start() {
             dup2(out->get_handler(), 1);
             out->child_callback();
         }
-        execve(program_name.c_str(), tokens.data(), nullptr);
+        execve(program_name.c_str(), tokens.data(), env.getEnvironmentVariables());
         throw std::invalid_argument("Program not found.");
     }
 
