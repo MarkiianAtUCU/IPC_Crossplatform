@@ -43,7 +43,14 @@ private:
 
 
 public:
-    explicit MyProcess(std::string program_name) : program_name(program_name) {};
+    explicit MyProcess(std::string program_name) {
+#ifdef _WIN32
+        this->program_name = program_name + ".exe";
+
+#else
+        this->program_name = program_name
+#endif
+    };
 
     void set_arguments(std::string args) {
         arguments = args;
