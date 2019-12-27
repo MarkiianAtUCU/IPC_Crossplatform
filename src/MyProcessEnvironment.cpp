@@ -45,15 +45,15 @@ void MyProcessEnvironment::set(std::string key, std::string value) {
     env[key] = value;
 }
 
-
-char **MyProcessEnvironment::getEnvironmentVariables() {
+#ifdef _WIN32
+LPVOID MyProcessEnvironment::getEnvironmentVariables() {
     if (env.empty())
         return nullptr;
-    char **env_variables = new char *[env.size() + 1];
-#ifdef _WIN32
+
+    TCHAR *envVariables = new TCHAR[4096];
     LPTSTR currentEnvVariable;
 
-    currentEnvVariable = (LPTSTR) env_variables;
+    currentEnvVariable = (LPTSTR) envVariables;
 
     for (auto &iter : env) {
         std::string concat = iter.first + "=" + iter.second;
@@ -67,8 +67,13 @@ char **MyProcessEnvironment::getEnvironmentVariables() {
 
     *currentEnvVariable = (char)0;
 
-    return env_variables;
+    return envVariables;
+}
 #elif __linux__ || __APPLE__
+char **MyProcessEnvironment::getEnvironmentVariables() {
+    if (env.empty())
+        return nullptr;
+    char **env_variables = new char *[env.size() + 1];
     env_variables[env.size()] = nullptr;
 
     int counter = 0;
@@ -81,8 +86,8 @@ char **MyProcessEnvironment::getEnvironmentVariables() {
     }
 
     return env_variables;
-#endif
 }
+#endif
 
 
 MyProcessEnvironment MyProcessEnvironment::systemEnvironment() {

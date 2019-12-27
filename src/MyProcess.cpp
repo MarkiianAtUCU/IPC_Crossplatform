@@ -165,7 +165,7 @@ void MyProcess::start() {
                    NULL,           // Thread handle not inheritable
                    TRUE,          // Set handle inheritance to FALSE
                    0,              // No creation flags
-                   NULL,           // Use parent's environment block
+                   (LPVOID) env.getEnvironmentVariables(),           // Use parent's environment block
                    NULL,           // Use parent's starting directory
                    &si,            // Pointer to STARTUPINFO structure
                    &pid );          // Pointer to PROCESS_INFORMATION structur

@@ -59,7 +59,11 @@ int main(int argc, char **argv) {
     env.set("key2", "value2");
     env.set("key3", "value3");
 
+#if defined(__linux__) || defined(__APPLE__)
     MyProcess env_example("environment_vars_example");
+#elif _WIN32
+    MyProcess env_example("environment_vars_example.exe");
+#endif
     env_example.set_output_file("../Test/Out/env_example_out.txt");
     env_example.set_environment(env);
 

@@ -7,6 +7,10 @@
 
 #include <map>
 #include <vector>
+#include <string>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 
 class MyProcessEnvironment {
@@ -26,7 +30,11 @@ public:
 
     void set(std::string key, std::string value);
 
+#ifdef _WIN32
+    LPVOID getEnvironmentVariables();
+#elif __linux__ || __APPLE__
     char **getEnvironmentVariables();
+#endif
 };
 
 #endif //IPC_CROSSPLATFORM_MYPROCESSENVIRONMENT_H
