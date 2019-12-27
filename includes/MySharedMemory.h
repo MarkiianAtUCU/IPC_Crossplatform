@@ -6,15 +6,28 @@
 #define SHARED_MEMORY_MYSHAREDMEMORY_H
 
 #include <iostream>
+
+#ifdef _WIN32
+#include <windows.h>
+#elif __linux__ || __APPLE__
 #include <semaphore.h>
+#endif
+
 
 
 class MySharedMemory {
 private:
     std::string key;
     void *addr = nullptr;
-    sem_t *sem = nullptr;
     size_t mapping_size = 0;
+
+    #ifdef _WIN32
+    HANDLE memoryHandle = NULL;
+    HANDLE semaphoreHandle = NULL;
+    #elif __linux__ || __APPLE__
+    sem_t *sem = nullptr;
+    #endif
+
 
 public:
     explicit MySharedMemory(std::string key) : key(key) {}

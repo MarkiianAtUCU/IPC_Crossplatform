@@ -2,7 +2,16 @@
 // Created by andriiprysiazhnyk on 12/26/19.
 //
 
+#ifdef _WIN32
 #include "MyProcessEnvironment.h"
+#include <windows.h>
+#include <strsafe.h>
+#elif __linux__ || __APPLE__
+
+#include "MyProcessEnvironment.h"
+
+#endif
+
 
 extern char **environ;
 
@@ -37,11 +46,29 @@ void MyProcessEnvironment::set(std::string key, std::string value) {
 }
 
 
-char** MyProcessEnvironment::getEnvironmentVariables() {
+char **MyProcessEnvironment::getEnvironmentVariables() {
     if (env.empty())
         return nullptr;
-
     char **env_variables = new char *[env.size() + 1];
+#ifdef _WIN32
+    LPTSTR currentEnvVariable;
+
+    currentEnvVariable = (LPTSTR) envVariables;
+
+    for (auto &iter : env) {
+        std::string concat = iter.first + "=" + iter.second;
+
+        if (FAILED(StringCchCopy(currentEnvVariable, concat.size() + 1, TEXT(concat.c_str()))))
+        {
+            return FALSE;
+        }
+        currentEnvVariable += lstrlen(currentEnvVariable) + 1;
+    }
+
+    *currentEnvVariable = (char)0;
+
+    return envVariables;
+#elif __linux__ || __APPLE__
     env_variables[env.size()] = nullptr;
 
     int counter = 0;
@@ -54,6 +81,7 @@ char** MyProcessEnvironment::getEnvironmentVariables() {
     }
 
     return env_variables;
+#endif
 }
 
 

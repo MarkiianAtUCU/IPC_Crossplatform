@@ -3,7 +3,9 @@ project(IPC_Crossplatform)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set (CMAKE_CXX_FLAGS "-lrt -pthread")
+if(UNIX AND NOT APPLE)
+    set (CMAKE_CXX_FLAGS "-lrt -pthread")
+endif()
 
 include_directories(includes)
 add_executable(IPC_Crossplatform main.cpp includes/MyHandler.h includes/MyProcess.h src/MyHandler.cpp src/MyProcess.cpp includes/MyProcessEnvironment.h src/MyProcessEnvironment.cpp)
