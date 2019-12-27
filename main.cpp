@@ -4,7 +4,7 @@
 
 #if defined(__linux__) || defined(__APPLE__)
     #include <unistd.h>
-#edif
+#endif
 
 
 int main(int argc, char **argv) {
