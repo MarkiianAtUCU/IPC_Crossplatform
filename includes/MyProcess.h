@@ -48,7 +48,7 @@ public:
         this->program_name = program_name + ".exe";
 
 #else
-        this->program_name = program_name
+        this->program_name = program_name;
 #endif
     };
 
