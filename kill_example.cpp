@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <string>
 #if defined(__linux__) || defined(__APPLE__)
     #include <unistd.h>
 #elif _WIN32

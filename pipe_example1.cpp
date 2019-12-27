@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <string>
 
 int main(int argc, char **argv) {
     std::string message = "Hello from another end of a pipe!\n";
