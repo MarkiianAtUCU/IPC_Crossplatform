@@ -1,7 +1,10 @@
 #include <iostream>
 #include "MyProcess.h"
 #include "MyProcessEnvironment.h"
-//#include <unistd.h>
+
+#if defined(__linux__) || defined(__APPLE__)
+    #include <unistd.h>
+#edif
 
 
 int main(int argc, char **argv) {
