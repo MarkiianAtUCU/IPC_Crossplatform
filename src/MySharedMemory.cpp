@@ -23,12 +23,12 @@ bool MySharedMemory::create(size_t size) {
             PAGE_READWRITE,          // read/write access
             0,                       // maximum object size (high-order DWORD)
             mapping_size,                // maximum object size (low-order DWORD)
-            name.c_str());                 // name of mapping object
+            key.c_str());                 // name of mapping object
     if (memoryHandle == NULL)
     {
         error_message =  "Could not create file mapping object\n";
 //        GetLastError()
-        return false
+        return false;
     }
     this->attach(this->mapping_size);
 
@@ -36,12 +36,12 @@ bool MySharedMemory::create(size_t size) {
             NULL,           // default security attributes
             1,  // initial count
             1,  // maximum count
-            (name + "SEM").c_str());
+            (key + "SEM").c_str());
 
     if (semaphoreHandle == NULL)
     {
         error_message = "CreateSemaphore error\n";
-        return false
+        return false;
     }
 
     return true;
@@ -79,7 +79,7 @@ bool MySharedMemory::attach(size_t size) {
     memoryHandle = OpenFileMapping(
             FILE_MAP_ALL_ACCESS,   // read/write access
             FALSE,                 // do not inherit the name
-            name.c_str());
+            key.c_str());
     if (memoryHandle == NULL)
     {
         error_message =  "Could not attach to file mapping object";
@@ -99,7 +99,7 @@ bool MySharedMemory::attach(size_t size) {
     semaphoreHandle = OpenSemaphore(
             SEMAPHORE_MODIFY_STATE | SYNCHRONIZE,
             FALSE,
-            (name + "SEM").c_str());
+            (key + "SEM").c_str());
 
     return true;
     #elif __linux__ || __APPLE__

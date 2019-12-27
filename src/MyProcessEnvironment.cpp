@@ -53,7 +53,7 @@ char **MyProcessEnvironment::getEnvironmentVariables() {
 #ifdef _WIN32
     LPTSTR currentEnvVariable;
 
-    currentEnvVariable = (LPTSTR) envVariables;
+    currentEnvVariable = (LPTSTR) env_variables;
 
     for (auto &iter : env) {
         std::string concat = iter.first + "=" + iter.second;
@@ -67,7 +67,7 @@ char **MyProcessEnvironment::getEnvironmentVariables() {
 
     *currentEnvVariable = (char)0;
 
-    return envVariables;
+    return env_variables;
 #elif __linux__ || __APPLE__
     env_variables[env.size()] = nullptr;
 
